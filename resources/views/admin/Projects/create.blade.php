@@ -30,6 +30,16 @@
                 @enderror
             </div>
 
+            <div class="col-3">
+                <label for="name">Nome</label>
+                <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
+                    value="{{ old('name') }}">
+                @error('name')
+                    <div class="alert alert-danger mt-2">{{ $message }}</div>
+                @enderror
+            </div>
+
+
 
             <div class="col-3">
                 <label for="slug">Slug</label>

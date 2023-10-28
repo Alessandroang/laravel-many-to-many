@@ -11,7 +11,8 @@ class PageController extends Controller
 {
   public function index()
   {
-    $projects = Project::all();
+    $projects = Project::orderby('id', 'desc')->paginate(6);
+
     return view('guest.home', compact('projects'));
   }
 }
