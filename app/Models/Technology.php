@@ -13,4 +13,10 @@ class Technology extends Model
     {
         return $this->belongsToMany(Project::class);
     }
+
+
+    public function getTechnologyBadge()
+    {
+        return $this->label ? "<span class='badge' style='background-color: {$this->color}'>{$this->label}</span>" : "Nessuna tecnologia utilizzata";
+    }
 }

@@ -31,7 +31,7 @@
             </div>
 
             <div class="col-3">
-                <label for="name">Nome</label>
+                <label for="name">Nome del file</label>
                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
                     value="{{ old('name') }}">
                 @error('name')
@@ -50,17 +50,6 @@
                 @enderror
             </div>
 
-            <div class="col-3">
-                <label for="created_at">Created at</label>
-                <input type="date" name="created_at" id="created_at" class="form-control"
-                    value="{{ old('created_at') }}">
-            </div>
-
-            <div class="col-3">
-                <label for="updated_at">Updated at</label>
-                <input type="text" name="updated_at" id="updated_at" class="form-control"
-                    value="{{ old('updated_at') }}">
-            </div>
 
             <div class="col-3">
                 <label for="type_id">Tipologia</label>
@@ -73,6 +62,27 @@
                     @endforeach
                 </select>
             </div>
+
+
+
+            <div class="col-12">
+                <div class="row">
+                    <label for="technologies">Tecnologie</label>
+                    @foreach ($technologies as $technology)
+                        <div class="col-2">
+                            <input type="checkbox" name="technologies[]" id="technology_{{ $technology->id }}"
+                                value="{{ $technology->id }}" class="form-check-input">
+                            <label for="technology_{{ $technology->id }}" class="form-check-control">
+                                {{ $technology->label }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+
+            </div>
+
+
+
 
             <div class="col-12">
                 <label for="content">Content</label>

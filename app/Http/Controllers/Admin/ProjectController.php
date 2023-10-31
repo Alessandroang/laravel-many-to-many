@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Type;
+use App\Models\Technology;
 use Illuminate\Support\Str;
 
 
@@ -18,7 +21,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::orderby('id', 'desc')->paginate(12);
+        $projects = Project::orderby('id', 'desc')->paginate(10);
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -30,7 +33,8 @@ class ProjectController extends Controller
     public function create()
     {
         $types = Type::all();
-        return view('admin.projects.create', compact('types'));
+        $technologies = Technology::all();
+        return view('admin.projects.create', compact('types', 'technologies'));
     }
 
     /**
@@ -39,17 +43,18 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
         // Valida i dati del form
-        $request->validate([
-            'name' => 'required|string',
-            'title' => 'required|string',
-            'content' => 'required|string',
-            'slug' => 'required|string',
-            'type_id' => 'nullable|exists:types,id',
+        // $request->validate([
+        //     'name' => 'required|string',
+        //     'title' => 'required|string',
+        //     'content' => 'required|string',
+        //     'slug' => 'required|string',
+        //     'type_id' => 'nullable|exists:types,id',
+        // 'technologies' => ['nullable', 'exists:technologies,id'],
 
-        ]);
+        // ]);
 
         // Crea un nuovo progetto
         $project = new Project;
@@ -60,6 +65,12 @@ class ProjectController extends Controller
         $project->type_id = $request->input('type_id');
         // Salva il progetto nel database
         $project->save();
+
+
+        // Associa le tecnologie al progetto
+        if ($request->has('technologies')) {
+            $project->technologies()->attach($request->input('technologies'));
+        }
 
         return redirect()->route('admin.projects.show', $project)
             ->with('message', 'Progetto creato con successo.')
@@ -86,8 +97,10 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -96,26 +109,19 @@ class ProjectController extends Controller
      * @param  int  $id
      *  * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        // Valida i dati del form
-        $request->validate([
-            'name' => 'required|string',
-            'title' => 'required|string',
-            'content' => 'required|string',
-            'slug' => 'required|string',
-            'type_id' => 'nullable|exists:types,id',
-
-
-        ]);
 
         // Aggiorna i dati del progetto con i nuovi dati
-        $project->name = $request->input('name');
-        $project->title = $request->input('title');
-        $project->content = $request->input('content');
-        $project->slug = $request->input('slug');
-        $project->type_id = $request->input('type_id');
-        $project->save();
+        $data = $request->validated();
+
+        $project->update($data);
+
+        if ($request->has('technologies')) {
+            $project->technologies()->sync($request->input('technologies'));
+        } else {
+            $project->technologies()->detach();
+        }
 
         return redirect()->route('admin.projects.show', $project)
             ->with('message', 'Progetto aggiornato con successo.')
@@ -130,6 +136,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        $project->technologies()->detach();
         // Elimina il progetto dal database
         $project->delete();
 

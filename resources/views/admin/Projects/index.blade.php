@@ -15,6 +15,7 @@
                     <th scope="col">Id</th>
                     <th scope="col">Title</th>
                     <th scope="col">Tipologia</th>
+                    <th scope="col">Tecnologie</th>
                     <th scope="col">Slug</th>
                     <th scope="col">Created at</th>
                     <th scope="col">Updated at</th>
@@ -27,6 +28,21 @@
                         <th scope="row">{{ $project->id }}</th>
                         <td>{{ $project->title }}</td>
                         <td>{!! $project->getTypeBadge() !!}</td>
+                        <td>
+                            @if ($project->technologies->isEmpty())
+                                Nessuna tecnologia associata
+                            @else
+                                @foreach ($project->technologies as $technology)
+                                    {!! $technology->getTechnologyBadge() !!}
+                                    @if (!$loop->last)
+                                        ,
+                                    @endif
+                                @endforeach
+                            @endif
+                        </td>
+
+
+
 
 
                         <td>{{ $project->slug }}</td>

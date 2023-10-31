@@ -32,17 +32,7 @@
                 <input type="text" name="slug" id="slug" class="form-control" value="{{ $project->slug }}">
             </div>
 
-            <div class="col-3">
-                <label for="sale_date">Created at</label>
-                <input type="date" name="created_at" id="created_at" class="form-control"
-                    value="{{ $project->created_at }}">
-            </div>
 
-            <div class="col-3">
-                <label for="type">Updated at</label>
-                <input type="text" name="updated_at" id="updated_at" class="form-control"
-                    value="{{ $project->updated_at }}">
-            </div>
 
             <div class="col-3">
                 <label for="type_id">Tipologia</label>
@@ -54,6 +44,23 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="col-12">
+                <div class="row">
+                    <label for="technologies">Tecnologie</label>
+                    @foreach ($technologies as $technology)
+                        <div class="col-2">
+                            <input type="checkbox" name="technologies[]" id="technology_{{ $technology->id }}"
+                                value="{{ $technology->id }}" class="form-check-input"
+                                {{ in_array($technology->id, $project->technologies->pluck('id')->toArray()) ? 'checked' : '' }}>
+                            <label for="technology_{{ $technology->id }}" class="form-check-control">
+                                {{ $technology->label }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
 
             <div class="col-12">
                 <label for="description">Content</label>
