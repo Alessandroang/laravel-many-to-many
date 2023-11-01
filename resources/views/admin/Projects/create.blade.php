@@ -18,7 +18,7 @@
                 </ul>
             </div>
         @endif
-        <form action="{{ route('admin.projects.store') }}" method="POST" class="row g-3">
+        <form action="{{ route('admin.projects.store') }}" method="POST" class="row g-3" enctype="multipart/form-data">
             @csrf <!-- Aggiunto il token CSRF -->
 
             <div class="col-3">
@@ -62,6 +62,18 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="col-3">
+                <label for="image">Immagine</label>
+                <input type="file" name="image" id="image"
+                    class="form-control @error('image') is-invalid @enderror" value="{{ old('image') }}">
+                @error('slug')
+                    <div class="alert alert-danger mt-2">{{ $message }}</div>
+                @enderror
+            </div>
+
+
+
 
 
 

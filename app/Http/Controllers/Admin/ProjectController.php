@@ -129,19 +129,67 @@ class ProjectController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * SoftDelete the specified resource from storage.
      *
      * @param  int  $id
      *  * @return \Illuminate\Http\Response
      */
     public function destroy(Project $project)
     {
-        $project->technologies()->detach();
+
         // Elimina il progetto dal database
         $project->delete();
 
         return redirect()->route('admin.projects.index')
             ->with('message', 'Progetto eliminato con successo.')
+            ->with('message_type', 'success');
+    }
+
+    /**
+     * Display a listing of the deleted resource.
+     *
+     ** @return \Illuminate\Http\Response
+     */
+    public function trash()
+    {
+        $projects = Project::orderby('id', 'desc')->onlyTrashed()->paginate(10);
+        return view('admin.projects.trash.index', compact('projects'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Project $project
+     *  * @return \Illuminate\Http\Response
+     */
+    public function forceDestroy(int $id)
+    {
+        $project = Project::onlyTrashed()->findOrFail($id);
+        $project->technologies()->detach();
+        // Elimina il progetto dal database
+        $project->forceDelete();
+
+        return redirect()->route('admin.projects.trash.index')
+            ->with('message', 'Progetto eliminato con successo.')
+            ->with('message_type', 'success');
+    }
+
+
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param  Project $project
+     *  * @return \Illuminate\Http\Response
+     */
+    public function restore(int $id)
+    {
+        $project = Project::onlyTrashed()->findOrFail($id);
+
+        // Elimina il progetto dal database
+        $project->restore();
+
+        return redirect()->route('admin.projects.trash.index')
+            ->with('message', 'Progetto ripristinato con successo.')
             ->with('message_type', 'success');
     }
 }

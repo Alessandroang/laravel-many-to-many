@@ -6,17 +6,10 @@
 
 @section('content')
     <div class="container mt-5">
-        <a href="{{ route('admin.projects.create') }}" class="btn btn-success">
-            <i class="fa fa-plus"></i>
-            Crea un nuovo progetto
+        <h1 class="mb-4">Lista progetti cestinati</h1>
+        <a href="{{ route('admin.projects.index') }}" class="btn btn-success">
+            Torna alla lista
         </a>
-
-        <a href="{{ route('admin.projects.trash.index') }}" class="btn btn-success">
-            <i class="fa-solid fa-trash"></i>
-
-            Vedi cestino
-        </a>
-
         <table class="table mt-4">
             <thead>
                 <tr>
@@ -25,9 +18,9 @@
                     <th scope="col">Tipologia</th>
                     <th scope="col">Tecnologie</th>
                     <th scope="col">Slug</th>
-                    <th scope="col">Created at</th>
-                    <th scope="col">Updated at</th>
-                    <th scope="col">Azioni</th>
+
+                    <th scope="col">Deleted at</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -54,15 +47,14 @@
 
 
                         <td>{{ $project->slug }}</td>
-                        <td>{{ $project->created_at }}</td>
-                        <td>{{ $project->updated_at }}</td>
+                        <td>{{ $project->deleted_at }}</td>
+
                         <td>
                             <div class="d-flex">
-                                <a href="{{ route('admin.projects.show', $project) }}" class="mx-1">
-                                    <i class="fa-solid fa-up-right-from-square"></i>
-                                </a>
-                                <a href="{{ route('admin.projects.edit', $project) }}" class="mx-1">
-                                    <i class="fa-solid fa-pencil"></i>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#restore-modal-{{ $project->id }}"
+                                    class="text-success">
+
+                                    <i class="fa-solid fa-arrow-turn-up fa-rotate-270"></i>
                                 </a>
                                 <a href="#" class="mx-1" data-bs-toggle="modal"
                                     data-bs-target="#delete-modal-{{ $project->id }}">
@@ -80,18 +72,48 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Sei sicuro di voler mettere nel cestino il Progetto
+                                            Sei sicuro di voler eliminare definitivamente il Progetto
                                             "{{ $project->title }}"?
+                                            Non sarà più possibile ripristinarlo!
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Annulla</button>
 
-                                            <form action="{{ route('admin.projects.destroy', $project) }}" method="POST"
-                                                class="mx-1">
+                                            <form action="{{ route('admin.projects.trash.force-destroy', $project) }}"
+                                                method="POST" class="mx-1">
                                                 @method('DELETE')
                                                 @csrf
                                                 <button class="btn btn-danger">Elimina</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="restore-modal-{{ $project->id }}" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Conferma il ripristino</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Sei sicuro di voler ripristinare il Progetto
+                                            "{{ $project->title }}"?
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Annulla</button>
+
+                                            <form action="{{ route('admin.projects.trash.restore', $project) }}"
+                                                method="POST" class="mx-1">
+                                                @method('PATCH')
+                                                @csrf
+                                                <button class="btn btn-success">Ripristina</button>
                                             </form>
                                         </div>
                                     </div>

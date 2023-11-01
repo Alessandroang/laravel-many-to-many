@@ -27,6 +27,9 @@ Route::middleware(['auth', 'verified'])
 
     Route::get('/', [AdminPageController::class, 'index'])->name('home');
 
+    Route::get('/projects/trash', [ProjectController::class, 'trash'])->name('projects.trash.index');
+    Route::patch('/projects/trash/{project}/restore', [ProjectController::class, 'restore'])->name('projects.trash.restore');
+    Route::delete('/projects/trash/{project}', [ProjectController::class, 'forceDestroy'])->name('projects.trash.force-destroy');
     Route::resource('projects', ProjectController::class);
   });
 
