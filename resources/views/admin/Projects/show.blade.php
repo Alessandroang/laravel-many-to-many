@@ -13,7 +13,7 @@
             <div class="row">
 
                 <div class="col-md-4">
-                    {{-- <img src="{{ $comic->thumb }}" alt="{{ $comic->title }}" class="img-fluid"> --}}
+                    <img src="{{ asset('storage/' . $project->image) }}" class="img-fluid" alt="Immagine del progetto">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">

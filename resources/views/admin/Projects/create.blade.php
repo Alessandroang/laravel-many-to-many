@@ -63,13 +63,19 @@
                 </select>
             </div>
 
-            <div class="col-3">
-                <label for="image">Immagine</label>
-                <input type="file" name="image" id="image"
-                    class="form-control @error('image') is-invalid @enderror" value="{{ old('image') }}">
-                @error('slug')
-                    <div class="alert alert-danger mt-2">{{ $message }}</div>
-                @enderror
+            <div class="row">
+                <div class="col-3">
+                    <label for="image">Immagine</label>
+                    <input type="file" name="image" id="image"
+                        class="form-control @error('image') is-invalid @enderror" value="{{ old('image') }}">
+                    @error('image')
+                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-4 mt-2">
+                    <img src="" class="img-fluid" id="image_preview">
+
+                </div>
             </div>
 
 
@@ -112,4 +118,21 @@
 
     </div>
     </div>
+@endsection
+
+
+@section('scripts')
+    <script type="text/javascript">
+        const inputFileElement = document.getElementById('image');
+        const imagePreview = document.getElementById('image_preview');
+
+        if (!imagePreview.getAttribute('src')) {
+            imagePreview.src = "https://placehold.co/400";
+        }
+
+        inputFileElement.addEventListener('change', function() {
+            const [file] = this.files;
+            imagePreview.src = URL.createObjectURL(file)
+        })
+    </script>
 @endsection

@@ -8,12 +8,18 @@
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
 
-                        <img src="{{ $project->immagine_url }}" class="card-img-top" alt="{{ $project->title }}">
+
+
+
                         <div class="card-body ">
 
                             <h5 class="card-title">{{ $project->title }}</h5>
 
                             <p class="card-text">{{ $project->getAbstract(170) }}</p>
+
+                            <img src="{{ asset('storage/' . $project->image) }}" class="img-fluid mb-4"
+                                alt="Immagine del progetto">
+
 
                             @if ($project->type)
                                 <p class="card-text"><strong>Tipologia:</strong> {!! $project->getTypeBadge() !!}</p>

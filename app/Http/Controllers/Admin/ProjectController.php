@@ -10,7 +10,7 @@ use App\Models\Project;
 use App\Models\Type;
 use App\Models\Technology;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -45,16 +45,7 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        // Valida i dati del form
-        // $request->validate([
-        //     'name' => 'required|string',
-        //     'title' => 'required|string',
-        //     'content' => 'required|string',
-        //     'slug' => 'required|string',
-        //     'type_id' => 'nullable|exists:types,id',
-        // 'technologies' => ['nullable', 'exists:technologies,id'],
 
-        // ]);
 
         // Crea un nuovo progetto
         $project = new Project;
@@ -62,6 +53,13 @@ class ProjectController extends Controller
         $project->title = $request->input('title');
         $project->content = $request->input('content');
         $project->slug = $request->input('slug');
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('projects/images', 'public');
+            $project->image = $imagePath;
+        }
+
+
         $project->type_id = $request->input('type_id');
         // Salva il progetto nel database
         $project->save();
@@ -115,6 +113,13 @@ class ProjectController extends Controller
         // Aggiorna i dati del progetto con i nuovi dati
         $data = $request->validated();
 
+
+        if ($request->hasFile('image')) {
+            // Carica la nuova immagine e aggiorna il campo 'image'
+            $imagePath = $request->file('image')->store('projects/images', 'public');
+            $data['image'] = $imagePath;
+        }
+
         $project->update($data);
 
         if ($request->has('technologies')) {
@@ -165,6 +170,14 @@ class ProjectController extends Controller
     public function forceDestroy(int $id)
     {
         $project = Project::onlyTrashed()->findOrFail($id);
+
+        // Rimuovi l'immagine se presente
+        if ($project->image) {
+            Storage::delete('projects/images' . $project->image);
+        }
+
+
+
         $project->technologies()->detach();
         // Elimina il progetto dal database
         $project->forceDelete();

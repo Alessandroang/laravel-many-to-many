@@ -27,6 +27,7 @@ class UpdateProjectRequest extends FormRequest
         return [
             'name' => 'nullable|string',
             'title' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
             'content' => 'nullable|string',
             'slug' => 'nullable|string',
             'type_id' => 'nullable|exists:types,id',
