@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
 @section('content')
     <div class="container mt-5">
         <a href="{{ route('admin.projects.index') }}" class="btn btn-success my-4">
@@ -55,8 +60,20 @@
                         <div class="alert alert-danger mt-2">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-4 mt-2">
-                    <img src="{{ asset('storage/' . $project->image) }}" class="img-fluid" id="image_preview">
+                <div class="col-4 mt-2 position-relative">
+
+
+                    @if ($project->image)
+                        <span
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger delete-image-button"
+                            id="delete-image-button">
+                            <i class="fa-solid fa-trash"></i>
+                            <span class="visually-hidden">delete image</span>
+                        </span>
+                    @endif
+
+                    <img src="{{ $project->image ? asset('storage/' . $project->image) : 'https://placehold.co/400' }}"
+                        class="img-fluid" id="image_preview">
 
                 </div>
             </div>
@@ -92,6 +109,15 @@
                 <button type="submit" class="btn btn-primary">Modifica Progetto</button>
             </div>
         </form>
+
+
+        @if ($project->image)
+            <form method="POST" action="{{ route('admin.projects.delete-image', $project) }}" id="delete-image-form">
+                @method('DELETE')
+                @csrf
+            </form>
+        @endif
+
     </div>
 @endsection
 
@@ -109,4 +135,13 @@
             imagePreview.src = URL.createObjectURL(file)
         })
     </script>
+    @if ($project->image)
+        <script>
+            const deleteImageButton = document.getElementById('delete-image-button');
+            const deleteImageForm = document.getElementById('delete-image-form');
+            deleteImageButton.addEventListener('click', function() {
+                deleteImageForm.submit()
+            })
+        </script>
+    @endif
 @endsection

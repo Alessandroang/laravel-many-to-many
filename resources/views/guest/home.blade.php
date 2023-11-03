@@ -15,9 +15,9 @@
 
                             <h5 class="card-title">{{ $project->title }}</h5>
 
-                            <p class="card-text">{{ $project->getAbstract(170) }}</p>
+                            <p class="card-text">{{ $project->getAbstract(130) }}</p>
 
-                            <img src="{{ asset('storage/' . $project->image) }}" class="img-fluid mb-4"
+                            <img src="{{ asset('storage/' . $project->image) }}" style= "width:200px"class="img-fluid mb-4"
                                 alt="Immagine del progetto">
 
 

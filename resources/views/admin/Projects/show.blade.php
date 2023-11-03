@@ -13,7 +13,8 @@
             <div class="row">
 
                 <div class="col-md-4">
-                    <img src="{{ asset('storage/' . $project->image) }}" class="img-fluid" alt="Immagine del progetto">
+                    <img src="{{ $project->image ? asset('storage/' . $project->image) : 'https://placehold.co/400' }}"
+                        class="img-fluid" id="image_preview">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
