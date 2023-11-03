@@ -173,7 +173,7 @@ class ProjectController extends Controller
 
         // Rimuovi l'immagine se presente
         if ($project->image) {
-            Storage::delete('projects/images' . $project->image);
+            Storage::delete($project->image);
         }
 
 
@@ -203,6 +203,25 @@ class ProjectController extends Controller
 
         return redirect()->route('admin.projects.trash.index')
             ->with('message', 'Progetto ripristinato con successo.')
+            ->with('message_type', 'success');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Project $project
+     *  * @return \Illuminate\Http\Response
+     */
+    public function deleteImage(Project $project)
+    {
+
+        Storage::delete($project->image);
+        $project->image = null;
+        $project->save();
+
+
+        return redirect()->route('admin.projects.edit', $project)
+            ->with('message', 'Immagine eliminata con successo.')
             ->with('message_type', 'success');
     }
 }
