@@ -11,6 +11,7 @@ use App\Models\Type;
 use App\Models\Technology;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
 
 class ProjectController extends Controller
 {
@@ -223,5 +224,20 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.edit', $project)
             ->with('message', 'Immagine eliminata con successo.')
             ->with('message_type', 'success');
+    }
+
+
+    public function publish(Project $project, Request $request)
+    {
+        $data = $request->all();
+        $project->published = !Arr::exists($data, 'published') ? 1 : null;
+        $project->save();
+
+        // TODO: DA AGGIUNGERE INVIO EMAIL
+        // $user = Auth::user();
+        // $published_post_mailable = new ProjectPublished($projectt);
+        // Mail::to($user->email)->send($published_project_mailable);
+
+        return redirect()->back();
     }
 }

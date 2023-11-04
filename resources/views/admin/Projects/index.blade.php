@@ -24,9 +24,8 @@
                     <th scope="col">Title</th>
                     <th scope="col">Tipologia</th>
                     <th scope="col">Tecnologie</th>
+                    <th scope="col">Published</th>
                     <th scope="col">Slug</th>
-                    <th scope="col">Created at</th>
-                    <th scope="col">Updated at</th>
                     <th scope="col">Azioni</th>
                 </tr>
             </thead>
@@ -52,9 +51,22 @@
 
 
 
+                        <td>
+                            <form action="{{ route('admin.projects.publish', $project) }}" method="POST"
+                                id="form-published-{{ $project->id }}">
+                                @method('PATCH')
+                                @csrf
+
+                                <label class="switch">
+                                    <input type="checkbox" name="published"
+                                        @if ($project->published) checked @endif>
+                                    <span class="slider round checkbox-published" data-id="{{ $project->id }}"></span>
+                                </label>
+                            </form>
+                        </td>
 
                         <td>{{ $project->slug }}</td>
-                        <td>{{ $project->created_at }}</td>
+
                         <td>{{ $project->updated_at }}</td>
                         <td>
                             <div class="d-flex">
@@ -87,8 +99,8 @@
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Annulla</button>
 
-                                            <form action="{{ route('admin.projects.destroy', $project) }}" method="POST"
-                                                class="mx-1">
+                                            <form action="{{ route('admin.projects.destroy', $project) }}"
+                                                id="form-published-{{ $project->id }}" method="POST" class="mx-1">
                                                 @method('DELETE')
                                                 @csrf
                                                 <button class="btn btn-danger">Elimina</button>
@@ -108,4 +120,21 @@
         </table>
         {{ $projects->links('pagination::bootstrap-5') }}
     </div>
+@endsection
+
+
+@section('scripts')
+    <script>
+        const checkboxesPublished = document.getElementsByClassName('checkbox-published');
+        console.log(checkboxesPublished);
+
+
+        for (checkbox of checkboxesPublished) {
+            checkbox.addEventListener('click', function() {
+                const idPost = this.getAttribute('data-id');
+                const form = document.getElementById('form-published-' + idPost);
+                form.submit();
+            })
+        }
+    </script>
 @endsection
